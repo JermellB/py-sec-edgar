@@ -13,3 +13,4 @@ pytest
 click
 pyarrow
 sphinx
+security==1.3.0
