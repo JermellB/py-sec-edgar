@@ -4,6 +4,8 @@ from urllib import parse
 from urllib.parse import urljoin
 
 import logging
+from security import safe_requests
+
 logger = logging.getLogger(__name__)
 
 import lxml.html
@@ -11,8 +13,6 @@ import pandas as pd
 
 import pyarrow as pa
 import pyarrow.parquet as pq
-
-import requests
 from bs4 import BeautifulSoup
 
 from py_sec_edgar import CONFIG
@@ -210,7 +210,7 @@ def download_edgar_filings_xbrl_rss_files():
             edgarFilingsFeed = parse.urljoin(
                 'https://www.sec.gov/Archives/edgar/monthly/', basename)
             if not os.path.exists(edgarFilingsFeed):
-                r = requests.get(CONFIG.edgar_monthly_index, headers=vpn_agent.random_header,
+                r = safe_requests.get(CONFIG.edgar_monthly_index, headers=vpn_agent.random_header,
                                  proxies=vpn_agent.random_proxy_host, timeout=(vpn_agent.connect_timeout, vpn_agent.read_timeout))
 
                 # g.GET_FILE(edgarFilingsFeed, filepath)
@@ -237,7 +237,7 @@ def download_and_flatten_monthly_xbrl_filings_list():
     vpn_agent = ProxyRequest()
     vpn_agent.generate_random_header_and_proxy_host()
 
-    r = requests.get(CONFIG.edgar_monthly_index, headers=vpn_agent.random_header,
+    r = safe_requests.get(CONFIG.edgar_monthly_index, headers=vpn_agent.random_header,
                      proxies=vpn_agent.random_proxy_host, timeout=(vpn_agent.connect_timeout, vpn_agent.read_timeout))
 
     html = lxml.html.fromstring(r.text)
@@ -269,7 +269,7 @@ def download_and_flatten_monthly_xbrl_filings_list():
                 logging.info("\n\n\n\nDownloading " + fullfilepath)
                 vpn_agent.generate_random_header_and_proxy_host()
 
-                r = requests.get(url, headers=vpn_agent.random_header, proxies=vpn_agent.random_proxy_host, timeout=(
+                r = safe_requests.get(url, headers=vpn_agent.random_header, proxies=vpn_agent.random_proxy_host, timeout=(
                     vpn_agent.connect_timeout, vpn_agent.read_timeout))
 
                 with open(fullfilepath, 'wb') as f:
@@ -383,7 +383,7 @@ def parse_monthly():
                             vpn_agent = ProxyRequest()
                             vpn_agent.generate_random_header_and_proxy_host()
 
-                            r = requests.get(CONFIG.edgar_monthly_index, headers=vpn_agent.random_header, proxies=vpn_agent.random_proxy_host, timeout=(
+                            r = safe_requests.get(CONFIG.edgar_monthly_index, headers=vpn_agent.random_header, proxies=vpn_agent.random_proxy_host, timeout=(
                                 vpn_agent.connect_timeout, vpn_agent.read_timeout))
 
                             # consume_complete_submission_filing.delay(basename, item, ticker)
