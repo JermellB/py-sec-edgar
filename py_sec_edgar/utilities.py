@@ -163,7 +163,7 @@ def uudecode(in_file, out_file=None, mode=None, quiet=True):
         # Read until a begin is encountered or we've exhausted the file
         #
         while True:
-            hdr = in_file.readline()
+            hdr = in_file.readline(5_000_000)
             if not hdr:
                 raise Error('No valid begin line found in input file')
             if not hdr.startswith(b'begin'):
@@ -198,7 +198,7 @@ def uudecode(in_file, out_file=None, mode=None, quiet=True):
         #
         # Main decoding loop
         #
-        s = in_file.readline()
+        s = in_file.readline(5_000_000)
         while s and s.strip(b' \t\r\n\f') != b'end':
             try:
                 data = binascii.a2b_uu(s)
@@ -209,7 +209,7 @@ def uudecode(in_file, out_file=None, mode=None, quiet=True):
                 if not quiet:
                     sys.stderr.write("Warning: %s\n" % v)
             out_file.write(data)
-            s = in_file.readline()
+            s = in_file.readline(5_000_000)
         if not s:
             raise Error('Truncated input file')
     finally:
