@@ -1,12 +1,13 @@
 
 import os
-import random
 import time
 
 import pandas as pd
 import requests
 
 import logging
+import secrets
+
 logger = logging.getLogger(__name__)
 
 class ProxyRequest(object):
@@ -48,7 +49,7 @@ class ProxyRequest(object):
         ]
 
     def generate_random_proxy_hosts(self):
-        proxy = random.choice(self.proxies)
+        proxy = secrets.choice(self.proxies)
 
         proxies = {
             'http': f'{self.service}://{self.USERNAME}:{self.PASSWORD}@{proxy}:{self.port}',
@@ -60,7 +61,7 @@ class ProxyRequest(object):
         return proxies
 
     def generate_random_header(self):
-        _user_agent = random.choice(self.list_user_agents)
+        _user_agent = secrets.choice(self.list_user_agents)
 
         _headers = {'User-Agent': _user_agent}
 
@@ -77,7 +78,7 @@ class ProxyRequest(object):
 
         if self.pause_for_courtesy:
             logger.info('\tpausing ... as a courtesy...\n\n')
-            time.sleep(random.randrange(5, 10))
+            time.sleep(secrets.SystemRandom().randrange(5, 10))
 
     def GET_FILE(self, url, filepath):
 
