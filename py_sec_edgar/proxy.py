@@ -4,9 +4,10 @@ import random
 import time
 
 import pandas as pd
-import requests
 
 import logging
+from security import safe_requests
+
 logger = logging.getLogger(__name__)
 
 class ProxyRequest(object):
@@ -90,7 +91,7 @@ class ProxyRequest(object):
 
                 self.generate_random_header_and_proxy_host()
 
-                self.r = requests.get(url, stream=True, headers=self.random_header, proxies=self.random_proxy_host, timeout=(self.connect_timeout, self.read_timeout))
+                self.r = safe_requests.get(url, stream=True, headers=self.random_header, proxies=self.random_proxy_host, timeout=(self.connect_timeout, self.read_timeout))
 
                 logger.info("\n\n\tSaving to: \t{}\n".format(filepath))
 
